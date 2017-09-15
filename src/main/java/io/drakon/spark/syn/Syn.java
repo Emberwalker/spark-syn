@@ -112,7 +112,7 @@ public class Syn {
                         res.removeCookie(COOKIE_NAME);
                         sessions.remove(cookie);
                     } else {
-                        req.session().attribute("user", usr.user);
+                        req.attribute("user", usr.user);
                         return;
                     }
                 } else res.removeCookie(COOKIE_NAME);
@@ -142,7 +142,7 @@ public class Syn {
             String sessKey = genRandomSessionKey();
             res.cookie(COOKIE_NAME, sessKey, (int)sessionLifetime.getSeconds(), secure, true);
             sessions.put(sessKey, new UserAndTimeout(user, LocalDateTime.now().plus(sessionLifetime)));
-            req.session().attribute("user", user);
+            req.attribute("user", user);
 
             return onAuthSuccess.handle(req, res);
         });
