@@ -1,17 +1,13 @@
 package io.drakon.spark.syn;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.crypto.SecretKey;
@@ -123,12 +119,17 @@ public class Syn {
             res.redirect(path, Redirect.Status.FOUND.intValue());
         });
 
-        Spark.get(path, render);
+        Spark.get(path, (req, res) -> {
+            if (req.attribute("user") != null) return onAuthSuccess.handle(req, res); // Already auth'd
+            return render.handle(req, res);
+        });
 
         Spark.post(path, (req, res) -> {
+            if (req.attribute("user") != null) return onAuthSuccess.handle(req, res); // Already auth'd
+
             String user = req.queryParams("syn-user");
             String password = req.queryParams("syn-password");
-            if (user == null || password == null) {
+            if (user == null || user.equals("") || password == null || password.equals("")) {
                 return failRoute(ErrorState.MISSING_FIELD, req, res);
             }
 
@@ -372,7 +373,7 @@ public class Syn {
             return;
         }
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (String s : argv) {
             buf.append(s);
         }
