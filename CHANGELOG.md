@@ -1,4 +1,7 @@
 # Syn Changelog
+## 0.0.4
+- Logout/Destroy Session methods.
+
 ## 0.0.3
 - Handle already auth'd users better in login path routes.
 - Fix missing field detection.

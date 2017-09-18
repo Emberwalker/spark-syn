@@ -150,6 +150,33 @@ public class Syn {
     }
 
     /**
+     * Logs out the given user during a request. Cleans up Spark state and removes the users cookie.
+     *
+     * When Request/Response objects are unavilable, see {@see destroySession}.
+     *
+     * @param user User to logout.
+     * @param req Spark Request object.
+     * @param res Spark Response object.
+     * @return True if a session was removed, else false.
+     */
+    public boolean logoutUser(String user, Request req, Response res) {
+        res.removeCookie(COOKIE_NAME);
+        req.attribute("user", null);
+        return destroySession(user);
+    }
+
+    /**
+     * Destroys any active sessions for the given user. You should prefer {@see logoutUser} where Request/Response
+     * objects are available, as that method properly clears Spark state and the users cookie.
+     *
+     * @param user User to logout.
+     * @return True if a session was removed, else false.
+     */
+    public boolean destroySession(String user) {
+        return sessions.remove(user) != null;
+    }
+
+    /**
      * Creates a new user, and writes the new users hash/salt to the auth provider. Includes user-specified metadata
      * for the auth provider.
      *
