@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.*;
 
+import static spark.Spark.halt;
+
 /**
  * Syn - Guarding the halls (of a Spark app)
  */
@@ -117,6 +119,7 @@ public class Syn {
             if (req.pathInfo().equals(path)) return;
 
             res.redirect(path, Redirect.Status.FOUND.intValue());
+            throw halt(Redirect.Status.FOUND.intValue());
         });
 
         Spark.get(path, (req, res) -> {

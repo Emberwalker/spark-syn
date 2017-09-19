@@ -1,4 +1,7 @@
 # Syn Changelog
+## 0.0.5
+- Properly halt during redirect to save further processing.
+
 ## 0.0.4
 - Logout/Destroy Session methods.
 
